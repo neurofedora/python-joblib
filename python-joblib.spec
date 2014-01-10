@@ -1,15 +1,16 @@
 %global upname joblib
+%global upversion 0.8.0a2
 %global with_python3 1
 
 Name: python-%{upname}
-Version: 0.7.1
-Release: 2%{?dist}
+Version: 0.8.0
+Release: 0.1.a2%{?dist}
 Summary: Lightweight pipelining: using Python functions as pipeline jobs
 License: BSD
 
 Group: Development/Libraries
 URL: http://pythonhosted.org/joblib
-Source0: https://pypi.python.org/packages/source/j/joblib/joblib-%{version}.tar.gz
+Source0: https://pypi.python.org/packages/source/j/joblib/joblib-%{upversion}.tar.gz
 BuildArch: noarch
 BuildRequires: python2-devel python-nose python-sphinx
 # Required by doctests
@@ -44,7 +45,7 @@ In particular, joblib offers:
 %endif # with_python3
 
 %prep
-%setup -n %{upname}-%{version} -q
+%setup -n %{upname}-%{upversion} -q
 rm -rf %{upname}.egg-info
 
 %if 0%{?with_python3}
@@ -87,17 +88,20 @@ popd
 %files
 %doc build/sphinx/html
 %{python_sitelib}/%{upname}
-%{python_sitelib}/%{upname}-%{version}-py2.7.egg-info
+%{python_sitelib}/%{upname}-%{upversion}-py2.7.egg-info
 
 %if 0%{?with_python3}
 %files -n python3-%{upname}
 %doc build/sphinx/html
 %{python3_sitelib}/%{upname}
-%{python3_sitelib}/%{upname}-%{version}-py3.3.egg-info
+%{python3_sitelib}/%{upname}-%{upversion}-py3.3.egg-info
 %endif # with_python3
 
 
 %changelog
+* Thu Jan 09 2014 Sergio Pascual <sergiopr@fedoraproject.org> - 0.8.0-0.1.a2
+- New upstream prerelease (0.8.0a2)
+
 * Sun Aug 25 2013 Sergio Pascual <sergiopr@fedoraproject.org> - 0.7.1-2
 - Removing upstream egg
 - Adding BR python(3)-setuptools
