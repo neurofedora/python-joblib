@@ -4,7 +4,7 @@
 
 Name: python-%{upname}
 Version: 0.8.0
-Release: 0.1.a2%{?dist}
+Release: 0.2.a2%{?dist}
 Summary: Lightweight pipelining: using Python functions as pipeline jobs
 License: BSD
 
@@ -72,7 +72,7 @@ popd
 nosetests
 %if 0%{?with_python3}
 pushd %{py3dir}
-nosetests-3.3
+nosetests-%{python3_version}
 popd
 %endif # with_python3
 
@@ -94,11 +94,14 @@ popd
 %files -n python3-%{upname}
 %doc build/sphinx/html
 %{python3_sitelib}/%{upname}
-%{python3_sitelib}/%{upname}-%{upversion}-py3.3.egg-info
+%{python3_sitelib}/%{upname}-%{upversion}-py%{python3_version}.egg-info
 %endif # with_python3
 
 
 %changelog
+* Wed May 14 2014 Bohuslav Kabrda <bkabrda@redhat.com> - 0.8.0-0.2.a2
+- Rebuilt for https://fedoraproject.org/wiki/Changes/Python_3.4
+
 * Thu Jan 09 2014 Sergio Pascual <sergiopr@fedoraproject.org> - 0.8.0-0.1.a2
 - New upstream prerelease (0.8.0a2)
 
