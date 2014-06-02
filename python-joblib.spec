@@ -13,48 +13,35 @@ In particular, joblib offers:						\
  * easy simple parallel computing					\
  * logging and tracing of the execution
 
-Name:		python-%{upname}
-Version:	0.8.0
-Release:	1%{?dist}
-Summary:	Lightweight pipelining: using Python functions as pipeline jobs
+Name: python-%{upname}
+Version: 0.8.0
+Release: 2%{?dist}
+Summary: Lightweight pipelining: using Python functions as pipeline jobs
+License: BSD
 
-License:	BSD
-URL:		http://pythonhosted.org/%{upname}
-Source0:	https://github.com/%{upname}/%{upname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
-
-BuildArch:	noarch
-BuildRequires:	numpy
-BuildRequires:	python-nose
-BuildRequires:	python2-devel
-
+URL: http://pythonhosted.org/joblib
+Source0: https://pypi.python.org/packages/source/j/joblib/joblib-%{version}.tar.gz
+BuildArch: noarch
+BuildRequires: numpy python-nose python2-devel
 # Required by doctests
-BuildRequires:	python-setuptools
-BuildRequires:	python-sphinx
-
-Requires:	numpy
+BuildRequires: python-setuptools python-sphinx
+Requires: numpy
 
 %description
 %{common_description}
 
-
 %if 0%{?with_python3}
 %package -n python3-joblib
-Summary:	Lightweight pipelining: using Python functions as pipeline jobs
+Summary: Lightweight pipelining: using Python functions as pipeline jobs
 
-BuildRequires:	python3-devel
-BuildRequires:	python3-nose
-BuildRequires:	python3-numpy
-
+BuildRequires: python3-numpy python3-nose python3-devel
 # Required by doctests
-BuildRequires:	python3-setuptools
-BuildRequires:	python3-sphinx
-
-Requires:	python3-numpy
+BuildRequires: python3-setuptools python3-sphinx
+Requires: python3-numpy
 
 %description -n python3-joblib
 %{common_description}
 %endif # 0%{?with_python3}
-
 
 %prep
 %setup -qn %{upname}-%{version}
@@ -63,24 +50,13 @@ rm -rf %{upname}.egg-info
 %if 0%{?with_python3}
 rm -rf %{py3dir}
 cp -a . %{py3dir}
-for _file in `find %{py3dir} -type f -name '*.py'`
-do
-  sed -e '1s|^#!.*python|#!%{__python3}|' < ${_file} > ${_file}.new &&	\
-  touch -r ${_file} ${_file}.new &&					\
-  mv -f ${_file}.new ${_file}
-done
+find %{py3dir} -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python3}|'
 
 # Fix failing testsuite, executable files are skipped
 chmod +x %{py3dir}/doc/sphinxext/autosummary_generate.py
 %endif # 0%{?with_python3}
 
-for _file in `find . -type f -name '*.py'`
-do
-  sed -e '1s|^#!.*python|#!%{__python2}|' < ${_file} > ${_file}.new &&	\
-  touch -r ${_file} ${_file}.new &&					\
-  mv -f ${_file}.new ${_file}
-done
-
+find -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python}|'
 
 %build
 %{__python2} setup.py build
@@ -94,26 +70,25 @@ pushd %{py3dir}
 popd
 %endif # 0%{?with_python3}
 
-
 %install
-%{__python2} setup.py install --skip-build --root  %{buildroot}
+%{__python2} setup.py install --skip-build --root %{buildroot}
 
 %if 0%{?with_python3}
 pushd %{py3dir}
-%{__python3} setup.py install --skip-build --root  %{buildroot}
+%{__python3} setup.py install --skip-build --root %{buildroot}
 popd
 %endif # 0%{?with_python3}
 
-
 %check
+pushd %{buildroot}/%{python2_sitelib}
 nosetests-%{python2_version} -v
+popd
 
 %if 0%{?with_python3}
-pushd %{py3dir}
+pushd %{buildroot}/%{python3_sitelib}
 nosetests-%{python3_version} -v
 popd
 %endif # 0%{?with_python3}
-
 
 %files
 %doc build/sphinx/html README*
@@ -127,6 +102,11 @@ popd
 %{python3_sitelib}/%{upname}-%{version}-py%{python3_version}.egg-info
 %endif # 0%{?with_python3}
 
+
+* Tue Jun 03 2014 Sergio Pascual <sergiopr@fedoraproject.org> - 0.8.0-2
+- Reverted stylistic changes
+- Run checks on installed files
+- Use tarball from PyPI
 
 %changelog
 * Mon Jun 02 2014 Björn Esser <bjoern.esser@gmail.com> - 0.8.0-1
