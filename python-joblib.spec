@@ -103,12 +103,12 @@ popd
 %endif # 0%{?with_python3}
 
 
+%changelog
 * Tue Jun 03 2014 Sergio Pascual <sergiopr@fedoraproject.org> - 0.8.0-2
 - Reverted stylistic changes
 - Run checks on installed files
 - Use tarball from PyPI
 
-%changelog
 * Mon Jun 02 2014 Björn Esser <bjoern.esser@gmail.com> - 0.8.0-1
 - new stable upstream
 - restructured spec-file
