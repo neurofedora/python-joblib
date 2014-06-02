@@ -20,7 +20,7 @@ Summary:	Lightweight pipelining: using Python functions as pipeline jobs
 
 License:	BSD
 URL:		http://pythonhosted.org/%{upname}
-Source0:	https://github.com/%{upname}/%{upname}/archive/%{version}.tar.gz#/%{upname}-%{version}.tar.gz
+Source0:	https://github.com/%{upname}/%{upname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildArch:	noarch
 BuildRequires:	numpy
