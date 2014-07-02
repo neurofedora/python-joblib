@@ -14,8 +14,8 @@ In particular, joblib offers:						\
  * logging and tracing of the execution
 
 Name: python-%{upname}
-Version: 0.8.0
-Release: 2%{?dist}
+Version: 0.8.2
+Release: 1%{?dist}
 Summary: Lightweight pipelining: using Python functions as pipeline jobs
 License: BSD
 
@@ -104,6 +104,9 @@ popd
 
 
 %changelog
+* Wed Jul 02 2014 Sergio Pascual <sergiopr@fedoraproject.org> - 0.8.2-1
+- New upstream release (0.8.2)
+
 * Tue Jun 03 2014 Sergio Pascual <sergiopr@fedoraproject.org> - 0.8.0-2
 - Reverted stylistic changes
 - Run checks on installed files
