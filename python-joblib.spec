@@ -15,7 +15,7 @@ In particular, joblib offers:						\
 
 Name: python-%{upname}
 Version: 0.8.4
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Lightweight pipelining: using Python functions as pipeline jobs
 License: BSD
 
@@ -104,6 +104,9 @@ popd
 
 
 %changelog
+* Tue Nov 10 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.8.4-3
+- Rebuilt for https://fedoraproject.org/wiki/Changes/python3.5
+
 * Thu Jun 18 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.8.4-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
