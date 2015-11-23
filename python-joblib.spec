@@ -13,97 +13,120 @@ In particular, joblib offers:						\
  * easy simple parallel computing					\
  * logging and tracing of the execution
 
-Name: python-%{upname}
-Version: 0.8.4
-Release: 3%{?dist}
-Summary: Lightweight pipelining: using Python functions as pipeline jobs
-License: BSD
+Name:           python-%{upname}
+Version:        0.9.3
+Release:        1%{?dist}
+Summary:        Lightweight pipelining: using Python functions as pipeline jobs
+License:        BSD
 
-URL: http://pythonhosted.org/joblib
-Source0: https://pypi.python.org/packages/source/j/joblib/joblib-%{version}.tar.gz
-BuildArch: noarch
-BuildRequires: numpy python-nose python2-devel
-# Required by doctests
-BuildRequires: python-setuptools python-sphinx
-Requires: numpy
+URL:            http://pythonhosted.org/joblib
+Source0:        https://github.com/joblib/joblib/archive/%{version}/%{upname}-%{version}.tar.gz
+BuildArch:      noarch
 
 %description
 %{common_description}
 
+%package -n python2-%{upname}
+Summary:        %{summary}
+%{?python_provide:%python_provide python2-%{upname}}
+%if 0%{?fedora} > 23
+BuildRequires:  python2-numpy
+%else
+BuildRequires:  numpy
+%endif
+BuildRequires:  python2-nose python2-devel
+# Required by doctests
+BuildRequires:  python2-setuptools python-sphinx
+%if 0%{?fedora} > 23
+Requires:       python2-numpy
+%else
+Requires:       numpy
+%endif
+
+%description -n python2-%{upname}
+%{common_description}
+
+Python 2 version.
+
 %if 0%{?with_python3}
 %package -n python3-joblib
-Summary: Lightweight pipelining: using Python functions as pipeline jobs
-
-BuildRequires: python3-numpy python3-nose python3-devel
+Summary:        Lightweight pipelining: using Python functions as pipeline jobs
+%{?python_provide:%python_provide python2-%{upname}}
+BuildRequires:  python3-numpy python3-nose python3-devel
 # Required by doctests
-BuildRequires: python3-setuptools python3-sphinx
-Requires: python3-numpy
+BuildRequires:  python3-setuptools python3-sphinx
+Requires:       python3-numpy
 
 %description -n python3-joblib
 %{common_description}
+
+Python 3 version.
 %endif # 0%{?with_python3}
 
 %prep
-%setup -qn %{upname}-%{version}
-rm -rf %{upname}.egg-info
+%setup -qc
+mv %{upname}-%{version} python2
 
 %if 0%{?with_python3}
-rm -rf %{py3dir}
-cp -a . %{py3dir}
-find %{py3dir} -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python3}|'
-
-# Fix failing testsuite, executable files are skipped
-chmod +x %{py3dir}/doc/sphinxext/autosummary_generate.py
+cp -a python2 python3
+find python3 -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python3}|'
 %endif # 0%{?with_python3}
 
-find -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python}|'
+find python2 -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python2}|'
 
 %build
-%{__python2} setup.py build
-%{__python2} setup.py build_sphinx
-rm -f build/sphinx/html/.buildinfo
+pushd python2
+  %py2_build
+  %{__python2} setup.py build_sphinx
+  rm -f build/sphinx/html/.buildinfo
+popd
 
 %if 0%{?with_python3}
-pushd %{py3dir}
-%{__python3} setup.py build
-# The doc system is not compatible with python3
+pushd python3
+  %py3_build
+  # The doc system is not compatible with python3
 popd
 %endif # 0%{?with_python3}
 
 %install
-%{__python2} setup.py install --skip-build --root %{buildroot}
+pushd python2
+  %py2_install
+popd
 
 %if 0%{?with_python3}
-pushd %{py3dir}
-%{__python3} setup.py install --skip-build --root %{buildroot}
+pushd python3
+  %py3_install
 popd
 %endif # 0%{?with_python3}
 
 %check
 pushd %{buildroot}/%{python2_sitelib}
-nosetests-%{python2_version} -v
+  nosetests-%{python2_version} -v
 popd
 
 %if 0%{?with_python3}
 pushd %{buildroot}/%{python3_sitelib}
-nosetests-%{python3_version} -v
+  nosetests-%{python3_version} -v
 popd
 %endif # 0%{?with_python3}
 
-%files
-%doc build/sphinx/html README*
-%{python2_sitelib}/%{upname}
-%{python2_sitelib}/%{upname}-%{version}-py%{python2_version}.egg-info
+%files -n python2-%{upname}
+%doc python2/build/sphinx/html python2/README.rst
+%doc python2/examples
+%{python2_sitelib}/%{upname}*
 
 %if 0%{?with_python3}
 %files -n python3-%{upname}
-%doc build/sphinx/html README*
-%{python3_sitelib}/%{upname}
-%{python3_sitelib}/%{upname}-%{version}-py%{python3_version}.egg-info
+%doc python2/build/sphinx/html python3/README.rst
+%doc python3/examples
+%{python3_sitelib}/%{upname}*
 %endif # 0%{?with_python3}
 
-
 %changelog
+* Mon Nov 23 2015 Igor Gnatenko <i.gnatenko.brain@gmail.com> - 0.9.3-1
+- Update to 0.9.3 (RHBZ #1236575)
+- Modernize spec
+
 * Tue Nov 10 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.8.4-3
 - Rebuilt for https://fedoraproject.org/wiki/Changes/python3.5
 
